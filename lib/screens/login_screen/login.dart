@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             SizedBox(height: 80),
             Center(child: AvatarWidget(
-                imageUrl: 'lib/assets/Logo.png', size: 200)),
+                imageUrl: 'lib/assets/ginbec_logo.png', size: 200)),
 
             Text('អគ្គាធិការដ្ឋានពុទ្ធិកសិក្សាជាតិ',style: TextStyle(
                 fontSize: 22,

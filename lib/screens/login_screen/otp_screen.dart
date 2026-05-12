@@ -12,7 +12,7 @@ class OtpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final PinTheme defaultTheme = PinTheme(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.purple),
+        border: Border.all(color: GColor.primarycolor),
         borderRadius: const BorderRadius.all(Radius.circular(8)),
         color: Colors.white,
       ),
@@ -36,7 +36,7 @@ class OtpScreen extends StatelessWidget {
             Pinput(
               defaultPinTheme: defaultTheme,
               focusedPinTheme: defaultTheme.copyBorderWith(
-                border: Border.all(color: Colors.purple, width: 2)
+                border: Border.all(color: GColor.white, width: 2)
               ),
               errorPinTheme: defaultTheme.copyBorderWith(border: Border.all(color: Colors.red, width: 2)),
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
