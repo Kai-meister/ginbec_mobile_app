@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ginbec_mobile_app/Widgets/round_button.dart';
 import 'package:ginbec_mobile_app/config/color.dart';
 import 'package:ginbec_mobile_app/widgets/avatar.dart';
 import 'package:ginbec_mobile_app/widgets/dashcard.dart';
@@ -50,7 +49,7 @@ class Home extends StatelessWidget {
                 children: [
                   SizedBox(height: 20),
                   GestureDetector( //First row
-                    onTap: (){print('go to profile');},
+                    onTap: (){debugPrint('go to profile');},
                     child: Row(
                       children: [
                         AvatarWidget(imageUrl: 'lib/assets/user_icon.png', size: 50),
@@ -63,7 +62,7 @@ class Home extends StatelessWidget {
                           ],
                         ),
                         Expanded(child: SizedBox()),
-                        IconButton(onPressed: (){print('setting icon');}, icon: Icon(Icons.settings)),
+                        IconButton(onPressed: (){debugPrint('setting icon');}, icon: Icon(Icons.settings)),
                       ],
                     ),
                   ),
@@ -83,17 +82,17 @@ class Home extends StatelessWidget {
                   Row(//4th row
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      ActionButton(icon: Icons.calendar_month, onTap: (){print('Book room');}, label: 'Book Room',BttBg: Colors.blueAccent),
-                      ActionButton(icon: Icons.two_k, onTap: (){print('Documents');}, label: 'Documents',BttBg: Colors.green),
-                      ActionButton(icon: Icons.group, onTap: (){print('Schedule');}, label: 'Schedule',BttBg: Colors.purple),
-                      ActionButton(icon: Icons.settings, onTap: (){print('setting');}, label: 'setting',BttBg: GColor.primarycolor),
+                      ActionButton(icon: Icons.calendar_month, onTap: (){debugPrint('Book room');}, label: 'Book Room',bttBg: Colors.blueAccent),
+                      ActionButton(icon: Icons.two_k, onTap: (){debugPrint('Documents');}, label: 'Documents',bttBg: Colors.green),
+                      ActionButton(icon: Icons.group, onTap: (){debugPrint('Schedule');}, label: 'Schedule',bttBg: Colors.purple),
+                      ActionButton(icon: Icons.settings, onTap: (){debugPrint('setting');}, label: 'setting',bttBg: GColor.primarycolor),
                     ],
                   ),
                 Row(//5th row
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Upcoming Meetings',style: TextStyle(fontSize: 20),),
-                    Hoverabletext(text: 'View All', onTap: (){print('View all meetings');}),
+                    Hoverabletext(text: 'View All', onTap: (){debugPrint('View all meetings');}),
                   ],
                 ),
                   //6th-7th Row
@@ -101,10 +100,10 @@ class Home extends StatelessWidget {
                   EventCard(tittle: 'Q3 Meeting with Director', attendee: 23, datetime: DateTime(2026, 10, 20, 15, 35)),
                   SizedBox(height: 20,),
                   EventCard(tittle: 'Declaration Tax final day', attendee: 12, datetime: DateTime(2026, 5, 16, 8, 30)),
-          
+
                   //8th row
                   SizedBox(height: 20,),
-                  // RoundButton(onPressed: (){print('book new meeting');},
+                  // RoundButton(onPressed: (){debugPrint('book new meeting');},
                   //   size:120,
                   //   height: 60,
                   //   width: 400,
@@ -113,13 +112,13 @@ class Home extends StatelessWidget {
                   //   fontSize: 20,
                   //   icon: Icons.calendar_month,
                   // ),
-                  TranspButton(icon: Icons.calendar_month, txt: 'Book New Meeting', onPressed: (){print('Book New Meeting');}),
+                  TranspButton(icon: Icons.calendar_month, txt: 'Book New Meeting', onPressed: (){debugPrint('Book New Meeting');}),
                   SizedBox(height: 20,),
                   Row(//9th row
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Recent Notifications',style: TextStyle(fontSize: 20),),
-                      Hoverabletext(text: 'View All', onTap: (){print('View all meetings');}),
+                      Hoverabletext(text: 'View All', onTap: (){debugPrint('View all meetings');}),
                     ],
                   ),
 
@@ -128,7 +127,7 @@ class Home extends StatelessWidget {
                   NotificationCard(
                     notifications: exampleNotifications,
                     onTap: (notification) {
-                      print('Tapped: ${notification.title}');
+                      debugPrint('Tapped: ${notification.title}');
                     },
                   ),
                   //11th row
@@ -174,7 +173,7 @@ class Home extends StatelessWidget {
                         ]
                       ),
                     )
-                  )
+                  ),
                 ],
               ),
             ),

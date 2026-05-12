@@ -42,7 +42,7 @@ class _TranspButtonState extends State<TranspButton> {
               onTapUp: (_) => setState(() => _onpressed = false),
               child: Center(
                 child: Text(
-                  ' '+widget.txt,style: TextStyle(
+                  ' ${widget.txt}',style: TextStyle(
                   fontSize: 20,
                   color: Colors.grey.shade500,
                   decoration: _onpressed ? TextDecoration.underline : TextDecoration.none,

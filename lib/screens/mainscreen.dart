@@ -1,0 +1,67 @@
+import 'package:flutter/material.dart';
+import 'package:ginbec_mobile_app/config/color.dart';
+import 'package:ginbec_mobile_app/widgets/tabbutton.dart';
+
+import 'home_screen/home.dart';
+import 'meeting_screen/meetingscreen.dart';
+
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _page = const [
+    Home(),
+    MeetingScreen(),
+    Home(),
+    Home(),
+  ];
+
+
+  void _onTabSelected(int index){
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: GColor.white,
+      body: _page[_selectedIndex],
+      bottomNavigationBar: BottomAppBar(
+        height: 68,
+        child: SafeArea(
+            child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            TabButton(
+                tittle: 'Home', 
+                icon: Icons.home, 
+                isSelected: _selectedIndex == 0, 
+                onTap: () => _onTabSelected(0)),
+            TabButton(
+                tittle: 'Meetings',
+                icon: Icons.group,
+                isSelected: _selectedIndex == 1,
+                onTap: () => _onTabSelected(1)),
+            TabButton(
+                tittle: 'Alerts',
+                icon: Icons.notifications,
+                isSelected: _selectedIndex == 2,
+                onTap: () => _onTabSelected(2)),
+            TabButton(
+                tittle: 'Setting',
+                icon: Icons.settings,
+                isSelected: _selectedIndex == 3,
+                onTap: () => _onTabSelected(3)),
+          ],
+        )),
+      ),
+    );
+  }
+}

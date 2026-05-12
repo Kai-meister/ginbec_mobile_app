@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ginbec_mobile_app/config/color.dart';
 import 'package:ginbec_mobile_app/screens/login_screen/login.dart';
-import 'package:ginbec_mobile_app/widgets/avatar.dart';
 
 import '../../Widgets/round_button.dart';
 import '../../Widgets/round_text_field.dart';

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ActionButton extends StatelessWidget {
   final VoidCallback onTap;
-  final Color? BttBg;
+  final Color? bttBg;
   final IconData icon;
   final String label;
   const ActionButton({
@@ -11,7 +11,7 @@ class ActionButton extends StatelessWidget {
     required this.icon,
     required this.onTap,
     required this.label,
-    this.BttBg,
+    this.bttBg,
   });
 
   @override
@@ -26,7 +26,7 @@ class ActionButton extends StatelessWidget {
             padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: BttBg ?? Colors.grey,
+              color: bttBg ?? Colors.grey,
               boxShadow: [BoxShadow(
                 color: Colors.grey.shade300,
                 blurRadius: 8,

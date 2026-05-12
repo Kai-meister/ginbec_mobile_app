@@ -4,7 +4,6 @@ import 'package:ginbec_mobile_app/screens/login_screen/otp_screen.dart';
 
 import '../../Widgets/round_button.dart';
 import '../../Widgets/round_text_field.dart';
-import 'login.dart';
 
 class ResetPassword extends StatelessWidget {
   final TextEditingController txtEmail = TextEditingController();
