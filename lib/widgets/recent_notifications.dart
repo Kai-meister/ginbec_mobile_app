@@ -4,14 +4,18 @@ import 'package:flutter/material.dart';
 class NotificationModel {
   final String id;
   final String title;
+  final String subtitle;
   final DateTime createdAt;
   final String type;
+  final bool isRead;
 
   NotificationModel({
     required this.id,
     required this.title,
+    required this.subtitle,
     required this.createdAt,
     required this.type,
+    this.isRead = false,
   });
 }
 

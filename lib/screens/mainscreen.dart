@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ginbec_mobile_app/config/color.dart';
+import 'package:ginbec_mobile_app/screens/alert_screen/alert.dart';
+import 'package:ginbec_mobile_app/screens/setting_screen/setting.dart';
 import 'package:ginbec_mobile_app/widgets/tabbutton.dart';
 
 import 'home_screen/home.dart';
@@ -18,8 +20,8 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _page = const [
     Home(),
     MeetingScreen(),
-    Home(),
-    Home(),
+    AlertScreen(),
+    SettingScreen(),
   ];
 
 

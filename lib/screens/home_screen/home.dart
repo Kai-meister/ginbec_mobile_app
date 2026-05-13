@@ -20,18 +20,21 @@ class Home extends StatelessWidget {
       NotificationModel(
         id: '1',
         title: 'Meeting Reminder',
+        subtitle: 'Meditation Hall A booking starts in 30 minutes',
         createdAt: DateTime.now().subtract(const Duration(minutes: 10)),
         type: 'meeting',
       ),
       NotificationModel(
         id: '2',
         title: 'Booking Confirmed',
+        subtitle: 'Your Conference Room 1 booking has been confirmed',
         createdAt: DateTime.now().subtract(const Duration(hours: 1)),
         type: 'booking',
       ),
       NotificationModel(
         id: '3',
         title: 'New Document Shared',
+        subtitle: 'Buddhist Education Guidelines 2026 has been shared with you',
         createdAt: DateTime.now().subtract(const Duration(hours: 2)),
         type: 'document',
       ),
@@ -92,7 +95,7 @@ class Home extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Upcoming Meetings',style: TextStyle(fontSize: 20),),
-                    Hoverabletext(text: 'View All', onTap: (){debugPrint('View all meetings');}),
+
                   ],
                 ),
                   //6th-7th Row
