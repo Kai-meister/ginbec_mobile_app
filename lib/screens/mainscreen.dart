@@ -17,8 +17,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _page = const [
-    Home(),
+  late final List<Widget> _page = [
+    Home(onNavigateToTab: _onTabSelected),
     MeetingScreen(),
     AlertScreen(),
     SettingScreen(),
@@ -26,9 +26,7 @@ class _MainScreenState extends State<MainScreen> {
 
 
   void _onTabSelected(int index){
-    setState(() {
-      _selectedIndex = index;
-    });
+    setState(()=> _selectedIndex =index);
   }
   @override
   Widget build(BuildContext context) {

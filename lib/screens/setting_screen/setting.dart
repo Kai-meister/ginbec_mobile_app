@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ginbec_mobile_app/config/color.dart';
+import 'package:ginbec_mobile_app/screens/login_screen/login.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -231,7 +232,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   // Sign Out
                   _SectionCard(
                     child: InkWell(
-                      onTap: () => debugPrint('Sign out'),
+                      onTap: (){Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginScreen()));},
                       borderRadius: BorderRadius.circular(14),
                       child: const Padding(
                         padding: EdgeInsets.symmetric(vertical: 14),

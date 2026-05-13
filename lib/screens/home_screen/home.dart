@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ginbec_mobile_app/config/color.dart';
+import 'package:ginbec_mobile_app/screens/setting_screen/setting.dart';
 import 'package:ginbec_mobile_app/widgets/avatar.dart';
 import 'package:ginbec_mobile_app/widgets/dashcard.dart';
 import 'package:ginbec_mobile_app/widgets/event_card.dart';
@@ -10,8 +11,12 @@ import 'package:ginbec_mobile_app/widgets/transp_button.dart';
 import '../../widgets/action_button.dart';
 
 class Home extends StatelessWidget {
+  final ValueChanged<int>? onNavigateToTab;
 
-  const Home({super.key});
+  const Home({
+    super.key,
+    this.onNavigateToTab,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +70,7 @@ class Home extends StatelessWidget {
                           ],
                         ),
                         Expanded(child: SizedBox()),
-                        IconButton(onPressed: (){debugPrint('setting icon');}, icon: Icon(Icons.settings)),
+                        IconButton(onPressed: ()=>onNavigateToTab?.call(3), icon: Icon(Icons.settings)),
                       ],
                     ),
                   ),
@@ -85,10 +90,10 @@ class Home extends StatelessWidget {
                   Row(//4th row
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      ActionButton(icon: Icons.calendar_month, onTap: (){debugPrint('Book room');}, label: 'Book Room',bttBg: Colors.blueAccent),
-                      ActionButton(icon: Icons.two_k, onTap: (){debugPrint('Documents');}, label: 'Documents',bttBg: Colors.green),
-                      ActionButton(icon: Icons.group, onTap: (){debugPrint('Schedule');}, label: 'Schedule',bttBg: Colors.purple),
-                      ActionButton(icon: Icons.settings, onTap: (){debugPrint('setting');}, label: 'setting',bttBg: GColor.primarycolor),
+                      ActionButton(icon: Icons.calendar_month, onTap: ()=> onNavigateToTab?.call(1), label: 'Book Room',bttBg: Colors.blueAccent),
+                      ActionButton(icon: Icons.two_k, onTap: ()=>onNavigateToTab?.call(1), label: 'Documents',bttBg: Colors.green),
+                      ActionButton(icon: Icons.group, onTap: ()=>onNavigateToTab?.call(1), label: 'Schedule',bttBg: Colors.purple),
+                      ActionButton(icon: Icons.settings, onTap: ()=>onNavigateToTab?.call(3), label: 'setting',bttBg: GColor.primarycolor),
                     ],
                   ),
                 Row(//5th row

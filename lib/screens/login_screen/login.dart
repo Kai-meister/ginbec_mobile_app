@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ginbec_mobile_app/config/color.dart';
 import 'package:ginbec_mobile_app/screens/login_screen/register.dart';
 import 'package:ginbec_mobile_app/screens/login_screen/reset_password.dart';
+import 'package:ginbec_mobile_app/screens/mainscreen.dart';
 import 'package:ginbec_mobile_app/widgets/avatar.dart';
 import 'package:ginbec_mobile_app/Widgets/round_text_field.dart';
 import 'package:ginbec_mobile_app/Widgets/round_button.dart';
@@ -48,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
             RoundTextField(controller: txtPassword, hintText: '********', icon: Icons.lock,isPassword: true,width: 400,height: 60,),
             SizedBox(height: 20),
             RoundButton(
-              onPressed: (){Navigator.push(context,MaterialPageRoute(builder:(context)=>Home()),);},
+              onPressed: (){Navigator.push(context,MaterialPageRoute(builder:(context)=>MainScreen()),);},
               size:120,
               height: 60,
               width: 400,
