@@ -6,11 +6,15 @@ class ActionButton extends StatelessWidget {
   final Color? bttBg;
   final IconData icon;
   final String label;
+  final double width;
+
+
   const ActionButton({
     super.key,
     required this.icon,
     required this.onTap,
     required this.label,
+    required this.width,
     this.bttBg,
   });
 
@@ -22,7 +26,7 @@ class ActionButton extends StatelessWidget {
         children: [
           Container(
             height: 80,
-            width: 80,
+            width: width,
             padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
@@ -35,7 +39,7 @@ class ActionButton extends StatelessWidget {
             ),
             child: Icon(icon,size: 40,color: Colors.white),
           ),
-          Text(label,style: TextStyle(fontWeight: FontWeight.bold),),
+          Text(label,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),),
         ],
       ),
 

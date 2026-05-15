@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ginbec_mobile_app/config/color.dart';
 import 'package:ginbec_mobile_app/screens/login_screen/login.dart';
+import 'package:ginbec_mobile_app/services/api_client.dart';
+import 'package:ginbec_mobile_app/services/storage_service.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -11,6 +13,27 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   bool _darkMode = false;
+  bool _isSigningOut = false;
+
+  Future<void> _signOut(BuildContext context) async {
+    if (_isSigningOut) return;
+    setState(() => _isSigningOut = true);
+
+    try {
+      await ApiClient.instance.dio.post('/auth/logout');
+    } catch (_) {
+      // Proceed with local logout even if API call fails
+    }
+
+    await StorageService.instance.clearAll();
+
+    if (!context.mounted) return;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      (_) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -232,19 +255,28 @@ class _SettingScreenState extends State<SettingScreen> {
                   // Sign Out
                   _SectionCard(
                     child: InkWell(
-                      onTap: (){Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginScreen()));},
+                      onTap: () => _signOut(context),
                       borderRadius: BorderRadius.circular(14),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 14),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                         child: Center(
-                          child: Text(
-                            'Sign Out',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          child: _isSigningOut
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.red,
+                                  ),
+                                )
+                              : const Text(
+                                  'Sign Out',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                         ),
                       ),
                     ),

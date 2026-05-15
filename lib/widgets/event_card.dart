@@ -34,8 +34,7 @@ class EventCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(tittle,style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-                    Expanded(child: SizedBox()),
+                    Expanded(child: Text(tittle,overflow: TextOverflow.ellipsis, maxLines: 1,style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),)),
                     Text(DateFormat(' hh:mm a',).format(datetime),style: TextStyle(color: GColor.primarycolor,fontSize: 18,fontWeight: FontWeight.bold),)]
                 ),
                 Row(

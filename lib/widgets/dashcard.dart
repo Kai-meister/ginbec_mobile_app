@@ -6,11 +6,13 @@ class DashCard extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
   final Color? cardbg;
+  final double width;
 
   const DashCard({
     super.key,
     required this.number,
     required this.label,
+    required this.width,
     this.onTap,
     this.cardbg,
   });
@@ -20,7 +22,7 @@ class DashCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 110,
+        width: width,
         height: 130,
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
@@ -35,19 +37,20 @@ class DashCard extends StatelessWidget {
           ]
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               number,
               style: TextStyle(
-                fontSize: 28,
+                fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: 8),
             Text(label,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 10,
               color: Colors.grey,
             ),
               textAlign: TextAlign.center,
