@@ -129,12 +129,12 @@ class NotificationTile extends StatelessWidget {
 
   String _formatTime(DateTime time) {
     final diff = DateTime.now().difference(time);
-    if (diff.inMinutes < 1) return 'Just now';
-    if (diff.inMinutes < 60) return '${diff.inMinutes} min ago';
+    if (diff.inMinutes < 1) return 'ទើបតែឥឡូវ';
+    if (diff.inMinutes < 60) return '${diff.inMinutes} នាទីមុន';
     if (diff.inHours < 24) {
-      return '${diff.inHours} hour${diff.inHours == 1 ? '' : 's'} ago';
+      return '${diff.inHours} ម៉ោងមុន';
     }
-    return '${diff.inDays} day${diff.inDays == 1 ? '' : 's'} ago';
+    return '${diff.inDays} ថ្ងៃមុន';
   }
 
   Color _colorForType(String type) {

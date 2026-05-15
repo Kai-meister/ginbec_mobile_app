@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _txtPassword.text;
 
     if (email.isEmpty || password.isEmpty) {
-      _showError('សូមបញ្ចូល Email និង Password');
+      _showError('សូមបញ្ចូលអ៊ីមែល និងពាក្យសម្ងាត់');
       return;
     }
 
@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } on DioException catch (e) {
       final msg = e.response?.data?['message'] as String?;
-      _showError(msg ?? 'Login បានបរាជ័យ។ សូមពិនិត្យ Email/Password');
+      _showError(msg ?? 'ការចូលបានបរាជ័យ។ សូមពិនិត្យអ៊ីមែល/ពាក្យសម្ងាត់');
     } catch (_) {
       _showError('មានបញ្ហា។ សូមព្យាយាមម្ដងទៀត');
     } finally {
@@ -153,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'លេខសម្ងាត់',
+                        'ពាក្យសម្ងាត់',
                         style: TextStyle(fontSize: 22),
                       ),
                     ),
@@ -177,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       size: 120,
                       height: 60,
                       width: fieldWidth,
-                      text: _isLoading ? 'កំពុង Login...' : 'Sign In',
+                      text: _isLoading ? 'កំពុងចូល...' : 'ចូលគណនី',
                       textColor: Colors.white,
                       fontSize: 20,
                       backgroundColor: _isLoading
@@ -194,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       },
                       child: Text(
-                        'forgot password',
+                        'ភ្លេចពាក្យសម្ងាត់',
                         style: TextStyle(color: GColor.primarycolor),
                       ),
                     ),
@@ -209,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                   },
                   child: Text(
-                    "Don't have an account? Register here",
+                    'មិនទាន់មានគណនី? ចុះឈ្មោះនៅទីនេះ',
                     style: TextStyle(color: GColor.primarycolor),
                   ),
                 ),

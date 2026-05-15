@@ -14,19 +14,19 @@ class StatusBadge extends StatelessWidget {
 
   /// Convenience constructors for common statuses
   factory StatusBadge.available() => const StatusBadge(
-    label: 'Available',
+    label: 'ទំនេរ',
     background: Color(0xFFD1FAE5),
     foreground: Color(0xFF047857),
   );
 
   factory StatusBadge.confirmed() => const StatusBadge(
-    label: 'Confirmed',
+    label: 'បានបញ្ជាក់',
     background: Color(0xFFD1FAE5),
     foreground: Color(0xFF047857),
   );
 
   factory StatusBadge.pending() => const StatusBadge(
-    label: 'Pending',
+    label: 'កំពុងរង់ចាំ',
     background: Color(0xFFFEF3C7),
     foreground: Color(0xFF92400E),
   );

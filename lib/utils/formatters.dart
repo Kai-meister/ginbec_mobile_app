@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 
 String formatDate(DateTime date) {
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return '${months[date.month - 1]} ${date.day}, ${date.year}';
+  const months = ['មករា', 'កុម្ភៈ', 'មីនា', 'មេសា', 'ឧសភា', 'មិថុនា',
+                  'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា', 'វិច្ឆិកា', 'ធ្នូ'];
+  return '${date.day} ${months[date.month - 1]} ${date.year}';
 }
 
 String formatTimeRange(TimeOfDay start, TimeOfDay end) {
   String fmt(TimeOfDay t) {
-    final h = t.hourOfPeriod == 0 ? 12 : t.hourOfPeriod;
+    final h = t.hour.toString().padLeft(2, '0');
     final m = t.minute.toString().padLeft(2, '0');
-    final period = t.period == DayPeriod.am ? 'AM' : 'PM';
-    return '$h:$m $period';
+    return '$h:$m';
   }
   return '${fmt(start)} – ${fmt(end)}';
 }

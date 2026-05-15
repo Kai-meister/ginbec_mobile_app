@@ -31,7 +31,7 @@ class OtpScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Please Enter Verification code',style: TextStyle(fontSize: 25),),
+            Text('សូមបញ្ចូលលេខកូដផ្ទៀងផ្ទាត់',style: TextStyle(fontSize: 25),),
             SizedBox(height: 40),
             Pinput(
               defaultPinTheme: defaultTheme,
@@ -41,7 +41,7 @@ class OtpScreen extends StatelessWidget {
               errorPinTheme: defaultTheme.copyBorderWith(border: Border.all(color: Colors.red, width: 2)),
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-              validator: (v) => v == '2222' ? null : 'Incorrect Pin',
+              validator: (v) => v == '2222' ? null : 'លេខកូដមិនត្រឹមត្រូវ',
               ),
             SizedBox(height: 40),
             RoundButton(
@@ -49,7 +49,7 @@ class OtpScreen extends StatelessWidget {
               size:120,
               height: 60,
               width: 400,
-              text: 'Create Account',
+              text: 'បង្កើតគណនី',
               textColor: Colors.white,
               fontSize: 20,
               backgroundColor: GColor.primarycolor,),

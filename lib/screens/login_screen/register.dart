@@ -36,7 +36,7 @@ class _RegisterAccountState extends State<RegisterAccount> {
                     children: [
                       IconButton(onPressed: (){Navigator.pop(context);},
                           icon: Icon(Icons.arrow_back)),
-                      Text('Back',style: TextStyle(
+                      Text('ត្រឡប់',style: TextStyle(
                           fontSize: 22,
                           fontFamily: 'KhmerOSMoulLightRegular'),
                           textAlign: TextAlign.left,)
@@ -53,52 +53,47 @@ class _RegisterAccountState extends State<RegisterAccount> {
                     ],
                   ),
                   SizedBox(height: 10),
-          
-        
-                      Text('Full Name',style: TextStyle(
-                          fontSize: 22,
-                          fontFamily: ''),textAlign: TextAlign.right),
-                    
-        
-                  RoundTextField(controller: txtFname , hintText: 'Enter your Full Name', icon: Icons.email,isPassword: false,width: 400,height: 60,),
+
+
+                      Text('ឈ្មោះពេញ',style: TextStyle(
+                          fontSize: 22),textAlign: TextAlign.right),
+
+
+                  RoundTextField(controller: txtFname , hintText: 'បញ្ចូលឈ្មោះពេញរបស់អ្នក', icon: Icons.email,isPassword: false,width: 400,height: 60,),
                   SizedBox(height: 10),
-          
-                  Text('Email',style: TextStyle(
-                      fontSize: 22,
-                      fontFamily: ''),textAlign: TextAlign.right),
+
+                  Text('អ៊ីមែល',style: TextStyle(
+                      fontSize: 22),textAlign: TextAlign.right),
                   RoundTextField(controller: txtFname , hintText: 'your.email@example.com', icon: Icons.email,isPassword: false,width: 400,height: 60,),
                   SizedBox(height: 10),
-          
-                  Text('Phone Number',style: TextStyle(
-                      fontSize: 22,
-                      fontFamily: ''),textAlign: TextAlign.right),
+
+                  Text('លេខទូរស័ព្ទ',style: TextStyle(
+                      fontSize: 22),textAlign: TextAlign.right),
                   RoundTextField(controller: txtFname , hintText: '+855 XX XXX XXX', icon: Icons.email,isPassword: false,width: 400,height: 60,),
                   SizedBox(height: 10),
-          
-                  Text('Password',style: TextStyle(
-                      fontSize: 22,
-                      fontFamily: ''),textAlign: TextAlign.right),
+
+                  Text('ពាក្យសម្ងាត់',style: TextStyle(
+                      fontSize: 22),textAlign: TextAlign.right),
                   RoundTextField(controller: txtFname , hintText: '********', icon: Icons.lock,isPassword: true,width: 400,height: 60,),
                   SizedBox(height: 10),
-          
-                  Text('Password',style: TextStyle(
-                      fontSize: 22,
-                      fontFamily: ''),textAlign: TextAlign.right),
+
+                  Text('បញ្ជាក់ពាក្យសម្ងាត់',style: TextStyle(
+                      fontSize: 22),textAlign: TextAlign.right),
                   RoundTextField(controller: txtFname , hintText: '********', icon: Icons.lock,isPassword: true,width: 400,height: 60,),
                   SizedBox(height: 40),
-          
+
                   RoundButton(
                     onPressed: (){Navigator.push(context,MaterialPageRoute(builder:(context)=>LoginScreen()),);},
                     size:120,
                     height: 60,
                     width: 400,
-                    text: 'Create Account',
+                    text: 'បង្កើតគណនី',
                     textColor: Colors.white,
                     fontSize: 20,
                     backgroundColor: GColor.primarycolor,),
-          
+
                   SizedBox(height: 100),
-                  Text("By register, you agree to GINBEC's Term of service and Privacy Policy",style: TextStyle(
+                  Text('ដោយចុះឈ្មោះ អ្នកយល់ព្រមតាមលក្ខខណ្ឌប្រើប្រាស់ និងគោលការណ៍ឯកជនភាពរបស់ GINBEC',style: TextStyle(
                       fontSize: 10,
                       fontFamily: 'KhmerOSMoulLightRegular'),
                     textAlign: TextAlign.right,),

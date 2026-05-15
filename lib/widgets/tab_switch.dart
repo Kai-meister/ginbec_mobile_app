@@ -27,7 +27,7 @@
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(tittle,style: TextStyle(
-              fontSize: 20,
+              fontSize: 15,
               fontWeight: FontWeight.bold,
               color: isSelected ? Colors.white  : Colors.grey.shade300)))
 

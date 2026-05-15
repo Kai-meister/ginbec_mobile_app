@@ -118,7 +118,7 @@ class _AlertScreenState extends State<AlertScreen> {
               Row(
                 children: [
                   Text(
-                    'Notifications',
+                    'ការជូនដំណឹង',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -128,7 +128,7 @@ class _AlertScreenState extends State<AlertScreen> {
                   const Expanded(child: SizedBox()),
                   if (unreadCount > 0)
                     Hoverabletext(
-                      text: 'Mark all read',
+                      text: 'សម្គាល់អានទាំងអស់',
                       onTap: _markAllRead,
                     ),
                 ],
@@ -136,8 +136,8 @@ class _AlertScreenState extends State<AlertScreen> {
               const SizedBox(height: 4),
               Text(
                 _isLoading
-                    ? 'Loading...'
-                    : 'You have $unreadCount unread notification${unreadCount == 1 ? '' : 's'}',
+                    ? 'កំពុងផ្ទុក...'
+                    : 'អ្នកមាន $unreadCount ការជូនដំណឹងមិនទាន់អាន',
                 style: TextStyle(fontSize: 14, color: GColor.secondarytext),
               ),
               const SizedBox(height: 20),
@@ -149,7 +149,7 @@ class _AlertScreenState extends State<AlertScreen> {
                 Expanded(
                   child: Center(
                     child: Text(
-                      'No notifications yet',
+                      'មិនទាន់មានការជូនដំណឹង',
                       style: TextStyle(color: Colors.grey.shade500),
                     ),
                   ),

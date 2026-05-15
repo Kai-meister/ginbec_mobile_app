@@ -44,22 +44,22 @@ class _MainScreenState extends State<MainScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               TabButton(
-                  tittle: 'Home',
+                  tittle: 'ទំព័រដើម',
                   icon: Icons.home,
                   isSelected: _selectedIndex == 0,
                   onTap: () => _onTabSelected(0)),
               TabButton(
-                  tittle: 'Meetings',
+                  tittle: 'កិច្ចប្រជុំ',
                   icon: Icons.group,
                   isSelected: _selectedIndex == 1,
                   onTap: () => _onTabSelected(1)),
               TabButton(
-                  tittle: 'Alerts',
+                  tittle: 'ការជូនដំណឹង',
                   icon: Icons.notifications,
                   isSelected: _selectedIndex == 2,
                   onTap: () => _onTabSelected(2)),
               TabButton(
-                  tittle: 'Setting',
+                  tittle: 'ការកំណត់',
                   icon: Icons.settings,
                   isSelected: _selectedIndex == 3,
                   onTap: () => _onTabSelected(3)),

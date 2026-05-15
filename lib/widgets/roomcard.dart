@@ -43,7 +43,7 @@ class RoomCard extends StatelessWidget {
           // Capacity + hours on one row
           Row(
             children: [
-              InfoRow(icon: Icons.people_outline, text: '${room.capacity} people'),
+              InfoRow(icon: Icons.people_outline, text: '${room.capacity} នាក់'),
               const SizedBox(width: 24),
               InfoRow(
                 icon: Icons.access_time,
@@ -64,12 +64,12 @@ class RoomCard extends StatelessWidget {
     return switch (status) {
       RoomStatus.available => StatusBadge.available(),
       RoomStatus.occupied => const StatusBadge(
-        label: 'Occupied',
+        label: 'កំពុងប្រើ',
         background: Color(0xFFFEE2E2),
         foreground: Color(0xFFB91C1C),
       ),
       RoomStatus.maintenance => const StatusBadge(
-        label: 'Maintenance',
+        label: 'ជួសជុល',
         background: Color(0xFFE5E7EB),
         foreground: Color(0xFF374151),
       ),
@@ -105,7 +105,7 @@ class _BookButton extends StatelessWidget {
                 Icon(Icons.add, color: Colors.white, size: 20),
                 SizedBox(width: 6),
                 Text(
-                  'Book Room',
+                  'កក់បន្ទប់',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,

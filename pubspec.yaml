@@ -89,9 +89,9 @@ flutter:
   # example:
 
   fonts:
-    - family: KhmerOSSiemreap
+    - family: battambangregular
       fonts:
-        - asset: lib/config/fonts/KhmerOSSiemreap.ttf
+        - asset: lib/config/fonts/Battambang-Regular.ttf
     - family: KhmerOSMoulLightRegular
       fonts:
         - asset: lib/config/fonts/KhmerOSMuolLightRegular.ttf

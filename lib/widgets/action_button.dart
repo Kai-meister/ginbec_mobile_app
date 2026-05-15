@@ -39,7 +39,7 @@ class ActionButton extends StatelessWidget {
             ),
             child: Icon(icon,size: 40,color: Colors.white),
           ),
-          Text(label,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),),
+          Text(label,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),),
         ],
       ),
 

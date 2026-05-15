@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ginbec_mobile_app/Widgets/round_text_field.dart';
 import 'package:ginbec_mobile_app/services/api_client.dart';
+import 'package:ginbec_mobile_app/widgets/book_meeting_room.dart';
 import 'package:ginbec_mobile_app/widgets/bookingcard.dart';
 import 'package:ginbec_mobile_app/widgets/tab_switch.dart';
 
@@ -74,7 +75,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
       final rooms = roomList.map((r) {
         final map = r as Map<String, dynamic>;
         return Room(
-          name: map['roomCode'] as String? ?? 'Room',
+          name: map['roomCode'] as String? ?? 'បន្ទប់',
           floor: map['location'] as String? ?? '',
           capacity: (map['capacity'] as num?)?.toInt() ?? 0,
           openTime: const TimeOfDay(hour: 8, minute: 0),
@@ -88,7 +89,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
       final bookings = meetingList.map((m) {
         final map = m as Map<String, dynamic>;
         return Booking(
-          roomName: map['title'] as String? ?? 'Meeting',
+          roomName: map['title'] as String? ?? 'កិច្ចប្រជុំ',
           date: DateTime.tryParse(map['meetingDate'] as String? ?? '') ??
               DateTime.now(),
           startTime: _parseTime(map['startTime'] as String?),
@@ -140,13 +141,100 @@ class _MeetingScreenState extends State<MeetingScreen> {
     setState(() => _selectedIndex = index);
   }
 
+  Future<void> _openBookMeeting(String preselectedRoom) async {
+    try {
+      final results = await Future.wait([
+        ApiClient.instance.dio.get(
+          '/meeting-rooms',
+          queryParameters: {'status': 'AVAILABLE'},
+        ),
+        ApiClient.instance.dio.get('/users', queryParameters: {
+          'page': 0,
+          'size': 100,
+        }),
+      ]);
+
+      final roomList = (results[0].data['data'] as List?) ?? [];
+      final userPage = results[1].data['data'] as Map<String, dynamic>;
+      final userList = (userPage['content'] as List?) ?? [];
+
+      final roomIdMap = <String, int>{};
+      final roomNames = <String>[];
+      for (final r in roomList) {
+        final map = r as Map<String, dynamic>;
+        final code = map['roomCode'] as String? ?? '';
+        final id = (map['roomId'] as num?)?.toInt();
+        if (code.isNotEmpty && id != null) {
+          roomNames.add(code);
+          roomIdMap[code] = id;
+        }
+      }
+
+      final attendees = userList.map((u) {
+        final map = u as Map<String, dynamic>;
+        final name = (map['userNameEn'] as String?)?.isNotEmpty == true
+            ? map['userNameEn'] as String
+            : (map['userNameKh'] as String?) ?? (map['email'] as String?) ?? '';
+        return Attendee(
+          name: name,
+          role: (map['roleName'] as String?) ?? 'Member',
+        );
+      }).toList();
+
+      if (!mounted) return;
+
+      await showBookMeetingRoomSheet(
+        context,
+        rooms: roomNames,
+        attendees: attendees,
+        initialRoom: roomNames.contains(preselectedRoom) ? preselectedRoom : null,
+        onSubmit: (booking) async {
+          try {
+            final roomName = booking['room'] as String;
+            final start = booking['startTime'] as TimeOfDay;
+            final end = booking['endTime'] as TimeOfDay;
+            String pad(int n) => n.toString().padLeft(2, '0');
+
+            await ApiClient.instance.dio.post('/meetings', data: {
+              'roomId': roomIdMap[roomName],
+              'title': booking['topic'],
+              'meetingDate': (booking['date'] as DateTime)
+                  .toIso8601String()
+                  .split('T')
+                  .first,
+              'startTime': '${pad(start.hour)}:${pad(start.minute)}:00',
+              'endTime': '${pad(end.hour)}:${pad(end.minute)}:00',
+              'meetingType': 'INTERNAL',
+              'statusCode': 'SCHEDULED',
+            });
+            if (!mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('កក់កិច្ចប្រជុំជោគជ័យ!')),
+            );
+            _loadData();
+          } catch (e) {
+            if (!mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('កក់បានបរាជ័យ: $e')),
+            );
+          }
+        },
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('ផ្ទុកបន្ទប់បានបរាជ័យ: $e')),
+      );
+    }
+  }
+
   Widget _buildRoomsList() {
     if (_filteredRooms.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 40),
           child: Text(
-            'No available rooms found',
+            'រកមិនឃើញបន្ទប់ទំនេរ',
             style: TextStyle(color: Colors.grey.shade500),
           ),
         ),
@@ -160,7 +248,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, i) => RoomCard(
         room: _filteredRooms[i],
-        onBook: () => debugPrint('Book: ${_filteredRooms[i].name}'),
+        onBook: () => _openBookMeeting(_filteredRooms[i].name),
       ),
     );
   }
@@ -171,7 +259,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 40),
           child: Text(
-            'No bookings found',
+            'គ្មានការកក់',
             style: TextStyle(color: Colors.grey.shade500),
           ),
         ),
@@ -206,7 +294,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
               children: [
                 const SizedBox(height: 40),
                 const Text(
-                  'Meeting Rooms',
+                  'បន្ទប់ប្រជុំ',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
@@ -215,7 +303,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                     Expanded(
                       child: RoundTextField(
                         controller: txtSearch,
-                        hintText: 'Search rooms...',
+                        hintText: 'ស្វែងរកបន្ទប់...',
                         icon: Icons.search,
                         isPassword: false,
                         height: 60,
@@ -243,14 +331,14 @@ class _MeetingScreenState extends State<MeetingScreen> {
                     children: [
                       Expanded(
                         child: TabSwitch(
-                          tittle: 'Available Rooms',
+                          tittle: 'បន្ទប់ទំនេរ',
                           onTap: () => _onselectedTap(0),
                           isSelected: _selectedIndex == 0,
                         ),
                       ),
                       Expanded(
                         child: TabSwitch(
-                          tittle: 'My Bookings',
+                          tittle: 'ការកក់របស់ខ្ញុំ',
                           onTap: () => _onselectedTap(1),
                           isSelected: _selectedIndex == 1,
                         ),

@@ -22,15 +22,14 @@ class ResetPassword extends StatelessWidget {
               children: [
                 IconButton(onPressed: (){Navigator.pop(context);},
                     icon: Icon(Icons.arrow_back)),
-                Text('Back',style: TextStyle(
+                Text('ត្រឡប់',style: TextStyle(
                     fontSize: 22,
                     fontFamily: 'KhmerOSMoulLightRegular'),
                   textAlign: TextAlign.left,)
               ],
             ),
-            Text('Email',style: TextStyle(
-                fontSize: 22,
-                fontFamily: ''),textAlign: TextAlign.right),
+            Text('អ៊ីមែល',style: TextStyle(
+                fontSize: 22),textAlign: TextAlign.right),
             RoundTextField(controller: txtEmail , hintText: 'your.email@example.com', icon: Icons.email,isPassword: false,width: 400,height: 60,),
             SizedBox(height: 20),
             RoundButton(
@@ -38,7 +37,7 @@ class ResetPassword extends StatelessWidget {
               size:120,
               height: 60,
               width: 400,
-              text: 'Send Code',
+              text: 'ផ្ញើលេខកូដ',
               textColor: Colors.white,
               fontSize: 20,
               backgroundColor: GColor.primarycolor,),

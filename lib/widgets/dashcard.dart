@@ -50,7 +50,7 @@ class DashCard extends StatelessWidget {
             SizedBox(height: 8),
             Text(label,
             style: TextStyle(
-              fontSize: 10,
+              fontSize: 15,
               color: Colors.grey,
             ),
               textAlign: TextAlign.center,

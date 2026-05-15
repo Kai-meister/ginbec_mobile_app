@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ginbec_mobile_app/config/color.dart';
 import 'package:ginbec_mobile_app/screens/login_screen/login.dart';
+import 'package:ginbec_mobile_app/screens/profile_screen/profile.dart';
+import 'package:ginbec_mobile_app/screens/setting_screen/about.dart';
+import 'package:ginbec_mobile_app/screens/setting_screen/privacy.dart';
+import 'package:ginbec_mobile_app/screens/setting_screen/terms.dart';
 import 'package:ginbec_mobile_app/services/api_client.dart';
 import 'package:ginbec_mobile_app/services/storage_service.dart';
 
@@ -12,7 +16,6 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  bool _darkMode = false;
   bool _isSigningOut = false;
 
   Future<void> _signOut(BuildContext context) async {
@@ -46,16 +49,10 @@ class _SettingScreenState extends State<SettingScreen> {
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(25, 60, 25, 22),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [GColor.primarycolor, GColor.secondarycolor],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
               ),
-            ),
             child: const Text(
-              'Settings',
+              'ការកំណត់',
               style: TextStyle(
-                color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
@@ -67,113 +64,8 @@ class _SettingScreenState extends State<SettingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Background Display
-                  _SectionCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            _IconCircle(
-                              icon: Icons.wallpaper_rounded,
-                              color: GColor.primarycolor,
-                            ),
-                            const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Background Display',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 15,
-                                    color: GColor.primarytext,
-                                  ),
-                                ),
-                                Text(
-                                  'View only - Background image preview',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: GColor.secondarytext,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Container(
-                          width: double.infinity,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: GColor.backgroundcolor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Stack(
-                            children: [
-                              Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 52,
-                                      height: 52,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFF7B2D8B),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: const Center(
-                                        child: Text(
-                                          'ॐ',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 24,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      'Current Background Theme',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: GColor.secondarytext,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Positioned(
-                                top: 8,
-                                right: 8,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade300,
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: const Text(
-                                    'View Only',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.black54,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
                   // Account
-                  _SectionLabel(label: 'Account'),
+                  _SectionLabel(label: 'គណនី'),
                   const SizedBox(height: 8),
                   _SectionCard(
                     child: Column(
@@ -181,16 +73,21 @@ class _SettingScreenState extends State<SettingScreen> {
                         _SettingRow(
                           icon: Icons.person_outline,
                           iconColor: GColor.primarycolor,
-                          title: 'Profile Settings',
-                          subtitle: 'Update your personal information',
-                          onTap: () {},
+                          title: 'ការកំណត់ប្រវត្តិរូប',
+                          subtitle: 'កែសម្រួលព័ត៌មានផ្ទាល់ខ្លួន',
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const ProfileScreen(),
+                            ),
+                          ),
                         ),
                         _RowDivider(),
                         _SettingRow(
                           icon: Icons.shield_outlined,
                           iconColor: const Color(0xFF7B2D8B),
-                          title: 'Privacy & Security',
-                          subtitle: 'Manage your privacy settings',
+                          title: 'ឯកជនភាព និងសុវត្ថិភាព',
+                          subtitle: 'គ្រប់គ្រងការកំណត់ឯកជនភាព',
                           onTap: () {},
                         ),
                       ],
@@ -199,7 +96,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   const SizedBox(height: 16),
 
                   // Preferences
-                  _SectionLabel(label: 'Preferences'),
+                  _SectionLabel(label: 'ចំណូលចិត្ត'),
                   const SizedBox(height: 8),
                   _SectionCard(
                     child: Column(
@@ -207,22 +104,17 @@ class _SettingScreenState extends State<SettingScreen> {
                         _SettingRow(
                           icon: Icons.notifications_outlined,
                           iconColor: const Color(0xFF5B9EFF),
-                          title: 'Notifications',
-                          subtitle: 'Customize notification preferences',
+                          title: 'ការជូនដំណឹង',
+                          subtitle: 'កែប្រែការជូនដំណឹង',
                           onTap: () {},
                         ),
                         _RowDivider(),
                         _SettingRow(
                           icon: Icons.language,
                           iconColor: const Color(0xFF34A853),
-                          title: 'Language',
-                          subtitle: 'English',
+                          title: 'ភាសា',
+                          subtitle: 'ភាសាខ្មែរ',
                           onTap: () {},
-                        ),
-                        _RowDivider(),
-                        _DarkModeRow(
-                          value: _darkMode,
-                          onChanged: (v) => setState(() => _darkMode = v),
                         ),
                       ],
                     ),
@@ -234,18 +126,33 @@ class _SettingScreenState extends State<SettingScreen> {
                     child: Column(
                       children: [
                         _SettingRow(
-                          title: 'About GINBEC',
-                          onTap: () {},
+                          title: 'អំពី GINBEC',
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AboutScreen(),
+                            ),
+                          ),
                         ),
                         _RowDivider(),
                         _SettingRow(
-                          title: 'Terms & Conditions',
-                          onTap: () {},
+                          title: 'លក្ខខណ្ឌប្រើប្រាស់',
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const TermsScreen(),
+                            ),
+                          ),
                         ),
                         _RowDivider(),
                         _SettingRow(
-                          title: 'Privacy Policy',
-                          onTap: () {},
+                          title: 'គោលការណ៍ឯកជនភាព',
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const PrivacyScreen(),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -270,7 +177,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                   ),
                                 )
                               : const Text(
-                                  'Sign Out',
+                                  'ចាកចេញ',
                                   style: TextStyle(
                                     color: Colors.red,
                                     fontSize: 16,
@@ -286,7 +193,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   // Footer
                   Center(
                     child: Text(
-                      'GINBEC v2.1.0',
+                      'GINBEC v1.0.0',
                       style: TextStyle(
                         fontSize: 12,
                         color: GColor.placeholder,
@@ -420,55 +327,6 @@ class _SettingRow extends StatelessWidget {
             Icon(Icons.chevron_right, color: Colors.grey.shade400),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _DarkModeRow extends StatelessWidget {
-  final bool value;
-  final ValueChanged<bool> onChanged;
-  const _DarkModeRow({required this.value, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        children: [
-          _IconCircle(
-            icon: Icons.dark_mode_outlined,
-            color: const Color(0xFF9C6FE4),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Dark Mode',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87,
-                  ),
-                ),
-                Text(
-                  'Enable dark theme',
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
-                ),
-              ],
-            ),
-          ),
-          Switch(
-            value: value,
-            onChanged: onChanged,
-            activeThumbColor: Colors.white,
-            activeTrackColor: const Color(0xFF9C6FE4),
-            inactiveThumbColor: Colors.white,
-            inactiveTrackColor: Colors.grey.shade300,
-          ),
-        ],
       ),
     );
   }
