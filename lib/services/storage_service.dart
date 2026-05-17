@@ -13,6 +13,8 @@ class StorageService {
   static const _keyUserId = 'user_id';
   static const _keyUserEmail = 'user_email';
   static const _keyUserName = 'user_name';
+  static const _keyUserRole = 'user_role';
+  static const _keyPermissions = 'user_permissions';
 
   Future<void> saveTokens({
     required String accessToken,
@@ -49,6 +51,28 @@ class StorageService {
 
   Future<String?> getUserName() =>
       _storage.read(key: _keyUserName);
+
+  Future<void> saveUserRole(String role) =>
+      _storage.write(key: _keyUserRole, value: role);
+
+  Future<String?> getUserRole() =>
+      _storage.read(key: _keyUserRole);
+
+  /// True if the current role is allowed to create, edit, or cancel meetings.
+  /// OFFICER and AUDITOR are view-only.
+  Future<bool> canManageMeetings() async {
+    final role = await getUserRole();
+    return role != 'OFFICER' && role != 'AUDITOR';
+  }
+
+  Future<void> savePermissions(List<String> permissions) =>
+      _storage.write(key: _keyPermissions, value: permissions.join(','));
+
+  Future<List<String>> getPermissions() async {
+    final raw = await _storage.read(key: _keyPermissions);
+    if (raw == null || raw.isEmpty) return const [];
+    return raw.split(',').where((s) => s.isNotEmpty).toList();
+  }
 
   Future<void> clearAll() => _storage.deleteAll();
 }

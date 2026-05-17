@@ -58,6 +58,14 @@ class _LoginScreenState extends State<LoginScreen> {
         StorageService.instance.saveUserName(
           (data['userNameEn'] as String?) ?? (data['userNameKh'] as String?) ?? email,
         ),
+        StorageService.instance.saveUserRole(
+          (data['roleName'] as String?) ?? '',
+        ),
+        StorageService.instance.savePermissions(
+          ((data['permissions'] as List?) ?? const [])
+              .map((e) => e.toString())
+              .toList(),
+        ),
       ]);
 
       if (!mounted) return;
@@ -66,10 +74,27 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (_) => const MainScreen()),
       );
     } on DioException catch (e) {
-      final msg = e.response?.data?['message'] as String?;
-      _showError(msg ?? 'ការចូលបានបរាជ័យ។ សូមពិនិត្យអ៊ីមែល/ពាក្យសម្ងាត់');
-    } catch (_) {
-      _showError('មានបញ្ហា។ សូមព្យាយាមម្ដងទៀត');
+      final serverMsg = e.response?.data is Map
+          ? e.response?.data['message'] as String?
+          : null;
+      if (serverMsg != null) {
+        _showError(serverMsg);
+      } else {
+        final reason = switch (e.type) {
+          DioExceptionType.connectionTimeout =>
+            'ការតភ្ជាប់យឺត។ ម៉ាស៊ីនមេអាចកំពុងភ្ញាក់ឡើង សូមព្យាយាមម្ដងទៀតក្នុង ៣០ វិនាទី។',
+          DioExceptionType.receiveTimeout =>
+            'ម៉ាស៊ីនមេឆ្លើយតបយឺត។ សូមព្យាយាមម្ដងទៀត។',
+          DioExceptionType.connectionError =>
+            'មិនអាចភ្ជាប់អ៊ីនធឺណិត។ សូមពិនិត្យបណ្តាញ។',
+          DioExceptionType.badCertificate =>
+            'បញ្ហាវិញ្ញាបនបត្រសុវត្ថិភាព (TLS)។',
+          _ => 'ការចូលបានបរាជ័យ (${e.type.name})។ សូមពិនិត្យអ៊ីមែល/ពាក្យសម្ងាត់',
+        };
+        _showError(reason);
+      }
+    } catch (e) {
+      _showError('មានបញ្ហា: $e');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -184,34 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ? Colors.grey
                           : GColor.primarycolor,
                     ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ResetPassword(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'ភ្លេចពាក្យសម្ងាត់',
-                        style: TextStyle(color: GColor.primarycolor),
-                      ),
-                    ),
                   ],
-                ),
-                const SizedBox(height: 20),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => RegisterAccount()),
-                    );
-                  },
-                  child: Text(
-                    'មិនទាន់មានគណនី? ចុះឈ្មោះនៅទីនេះ',
-                    style: TextStyle(color: GColor.primarycolor),
-                  ),
                 ),
               ],
             ),
