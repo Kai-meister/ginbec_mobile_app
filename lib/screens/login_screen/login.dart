@@ -7,8 +7,8 @@ import 'package:ginbec_mobile_app/screens/mainscreen.dart';
 import 'package:ginbec_mobile_app/services/api_client.dart';
 import 'package:ginbec_mobile_app/services/storage_service.dart';
 import 'package:ginbec_mobile_app/widgets/avatar.dart';
-import 'package:ginbec_mobile_app/Widgets/round_text_field.dart';
-import 'package:ginbec_mobile_app/Widgets/round_button.dart';
+import 'package:ginbec_mobile_app/widgets/round_text_field.dart';
+import 'package:ginbec_mobile_app/widgets/round_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

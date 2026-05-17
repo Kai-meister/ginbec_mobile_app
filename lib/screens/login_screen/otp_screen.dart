@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ginbec_mobile_app/config/color.dart';
 import 'package:pinput/pinput.dart';
 
-import '../../Widgets/round_button.dart';
+import '../../widgets/round_button.dart';
 import 'login.dart';
 
 class OtpScreen extends StatelessWidget {

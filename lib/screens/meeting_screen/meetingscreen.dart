@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:ginbec_mobile_app/Widgets/round_text_field.dart';
+import 'package:ginbec_mobile_app/widgets/round_text_field.dart';
 import 'package:ginbec_mobile_app/screens/meeting_screen/meeting_details.dart';
 import 'package:ginbec_mobile_app/services/api_client.dart';
 import 'package:ginbec_mobile_app/services/storage_service.dart';

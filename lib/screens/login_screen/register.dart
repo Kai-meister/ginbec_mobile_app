@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ginbec_mobile_app/config/color.dart';
 import 'package:ginbec_mobile_app/screens/login_screen/login.dart';
 
-import '../../Widgets/round_button.dart';
-import '../../Widgets/round_text_field.dart';
+import '../../widgets/round_button.dart';
+import '../../widgets/round_text_field.dart';
 
 class RegisterAccount extends StatefulWidget {
   const RegisterAccount({super.key});
