@@ -1,6 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ginbec_mobile_app/Widgets/round_text_field.dart';
+import 'package:ginbec_mobile_app/screens/meeting_screen/meeting_details.dart';
 import 'package:ginbec_mobile_app/services/api_client.dart';
+import 'package:ginbec_mobile_app/services/storage_service.dart';
 import 'package:ginbec_mobile_app/widgets/book_meeting_room.dart';
 import 'package:ginbec_mobile_app/widgets/bookingcard.dart';
 import 'package:ginbec_mobile_app/widgets/tab_switch.dart';
@@ -26,12 +29,20 @@ class _MeetingScreenState extends State<MeetingScreen> {
   List<Booking> _allBookings = [];
   List<Booking> _filteredBookings = [];
   bool _isLoading = true;
+  bool _canManage = false;
 
   @override
   void initState() {
     super.initState();
     txtSearch.addListener(_onSearchChanged);
+    _loadRole();
     _loadData();
+  }
+
+  Future<void> _loadRole() async {
+    final can = await StorageService.instance.canManageMeetings();
+    if (!mounted) return;
+    setState(() => _canManage = can);
   }
 
   @override
@@ -89,6 +100,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
       final bookings = meetingList.map((m) {
         final map = m as Map<String, dynamic>;
         return Booking(
+          id: (map['meetingId'] as num?)?.toInt(),
           roomName: map['title'] as String? ?? 'កិច្ចប្រជុំ',
           date: DateTime.tryParse(map['meetingDate'] as String? ?? '') ??
               DateTime.now(),
@@ -130,8 +142,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
       case 'COMPLETED':
         return BookingStatus.confirmed;
       case 'CANCELLED':
-      case 'POSTPONED':
-        return BookingStatus.cancelled;
+      case 'POSTPONED':return BookingStatus.cancelled;
       default:
         return BookingStatus.pending;
     }
@@ -141,22 +152,95 @@ class _MeetingScreenState extends State<MeetingScreen> {
     setState(() => _selectedIndex = index);
   }
 
+  void _openDetails(Booking b) {
+    if (b.id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('រកមិនឃើញលេខសម្គាល់កិច្ចប្រជុំ')),
+      );
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MeetingDetailsScreen(meetingId: b.id!),
+      ),
+    );
+  }
+
+  Future<void> _cancelBooking(Booking b) async {
+    if (b.id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('រកមិនឃើញលេខសម្គាល់កិច្ចប្រជុំ')),
+      );
+      return;
+    }
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('បោះបង់ការកក់'),
+        content: Text('តើអ្នកប្រាកដចង់បោះបង់ "${b.roomName}" មែនទេ?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('ទេ'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('បាទ/ចាស', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    try {
+      await ApiClient.instance.dio.delete('/meetings/${b.id}');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('បានបោះបង់ការកក់')),
+      );
+      await _loadData();
+    } on DioException catch (e) {
+      if (!mounted) return;
+      final code = e.response?.statusCode;
+      final body = e.response?.data;
+      final serverMsg = body is Map ? body['message'] : null;
+      final shown = serverMsg ?? body?.toString() ?? e.message ?? e.type.name;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('បោះបង់បានបរាជ័យ [${code ?? '-'}]: $shown'),
+          duration: const Duration(seconds: 8),
+        ),
+      );
+    }
+  }
+
   Future<void> _openBookMeeting(String preselectedRoom) async {
     try {
-      final results = await Future.wait([
-        ApiClient.instance.dio.get(
-          '/meeting-rooms',
-          queryParameters: {'status': 'AVAILABLE'},
-        ),
-        ApiClient.instance.dio.get('/users', queryParameters: {
-          'page': 0,
-          'size': 100,
-        }),
-      ]);
+      final roomsResp = await ApiClient.instance.dio.get(
+        '/meeting-rooms',
+        queryParameters: {'status': 'AVAILABLE'},
+      );
+      final roomList = (roomsResp.data['data'] as List?) ?? [];
 
-      final roomList = (results[0].data['data'] as List?) ?? [];
-      final userPage = results[1].data['data'] as Map<String, dynamic>;
-      final userList = (userPage['content'] as List?) ?? [];
+      // /users requires USER_CREATE — managers and below get 403.
+      // Tolerate failure and just show no attendees to pick.
+      List<dynamic> userList = const [];
+      try {
+        final usersResp = await ApiClient.instance.dio.get(
+          '/users',
+          queryParameters: {'page': 0, 'size': 100},
+        );
+        final userPage =
+            usersResp.data['data'] as Map<String, dynamic>?;
+        userList = (userPage?['content'] as List?) ?? const [];
+      } catch (_) {
+        // ignore — booking still works without attendees in payload
+      }
 
       final roomIdMap = <String, int>{};
       final roomNames = <String>[];
@@ -212,6 +296,46 @@ class _MeetingScreenState extends State<MeetingScreen> {
               const SnackBar(content: Text('កក់កិច្ចប្រជុំជោគជ័យ!')),
             );
             _loadData();
+          } on DioException catch (e) {
+            if (!mounted) return;
+            final req = e.requestOptions;
+            final code = e.response?.statusCode;
+            final body = e.response?.data;
+            final authHeader =
+                (req.headers['Authorization'] as String?) ?? '(missing)';
+            final tokenPreview = authHeader.length > 25
+                ? '${authHeader.substring(0, 25)}...'
+                : authHeader;
+            final detail = StringBuffer()
+              ..writeln('URL: ${req.method} ${req.uri}')
+              ..writeln('Status: ${code ?? '-'}')
+              ..writeln('Auth: $tokenPreview')
+              ..writeln('Request payload:')
+              ..writeln(req.data?.toString() ?? '(empty)')
+              ..writeln('---')
+              ..writeln('Response body:')
+              ..writeln(body?.toString() ?? '(empty)')
+              ..writeln('Dio: ${e.type.name} ${e.message ?? ''}');
+            showDialog<void>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('កក់បានបរាជ័យ'),
+                content: SizedBox(
+                  width: double.maxFinite,
+                  child: SingleChildScrollView(
+                    child: SelectableText(detail.toString(),
+                        style: const TextStyle(
+                            fontFamily: 'monospace', fontSize: 12)),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: const Text('បិទ'),
+                  ),
+                ],
+              ),
+            );
           } catch (e) {
             if (!mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
@@ -248,7 +372,9 @@ class _MeetingScreenState extends State<MeetingScreen> {
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, i) => RoomCard(
         room: _filteredRooms[i],
-        onBook: () => _openBookMeeting(_filteredRooms[i].name),
+        onBook: _canManage
+            ? () => _openBookMeeting(_filteredRooms[i].name)
+            : null,
       ),
     );
   }
@@ -273,8 +399,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, i) => Bookingcard(
         booking: _filteredBookings[i],
-        onViewDetails: () => debugPrint('View: ${_filteredBookings[i].roomName}'),
-        onCancel: () => debugPrint('Cancel: ${_filteredBookings[i].roomName}'),
+        onViewDetails: () => _openDetails(_filteredBookings[i]),
+        onCancel: _canManage
+            ? () => _cancelBooking(_filteredBookings[i])
+            : null,
       ),
     );
   }
@@ -283,22 +411,31 @@ class _MeetingScreenState extends State<MeetingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: GColor.backgroundcolor,
-      body: RefreshIndicator(
-        onRefresh: _loadData,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 40),
-                const Text(
-                  'បន្ទប់ប្រជុំ',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
-                Row(
+      appBar: AppBar(
+        backgroundColor: GColor.white,
+        elevation: 0,
+        shape: Border(
+          bottom: BorderSide(color: Colors.grey.shade300, width: 1),
+        ),
+        toolbarHeight: 80,
+        automaticallyImplyLeading: false,
+        title: const Text(
+          'បន្ទប់ប្រជុំ',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: SafeArea(
+        top: false,
+        child: RefreshIndicator(
+          onRefresh: _loadData,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 25),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                   children: [
                     Expanded(
                       child: RoundTextField(
@@ -361,7 +498,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
                         ? _buildRoomsList()
                         : _buildBookingsList(),
                   ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

@@ -107,67 +107,73 @@ class _AlertScreenState extends State<AlertScreen> {
 
     return Scaffold(
       backgroundColor: GColor.backgroundcolor,
-      body: RefreshIndicator(
-        onRefresh: _loadNotifications,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 40),
-              Row(
-                children: [
-                  Text(
-                    'ការជូនដំណឹង',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: GColor.primarytext,
-                    ),
-                  ),
-                  const Expanded(child: SizedBox()),
-                  if (unreadCount > 0)
-                    Hoverabletext(
-                      text: 'សម្គាល់អានទាំងអស់',
-                      onTap: _markAllRead,
-                    ),
-                ],
+      appBar: AppBar(
+        backgroundColor: GColor.white,
+        elevation: 0,
+        shape: Border(
+          bottom: BorderSide(color: Colors.grey.shade300, width: 1),
+        ),
+        toolbarHeight: 80,
+        automaticallyImplyLeading: false,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'ការជូនដំណឹង',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: GColor.primarytext,
               ),
-              const SizedBox(height: 4),
-              Text(
-                _isLoading
-                    ? 'កំពុងផ្ទុក...'
-                    : 'អ្នកមាន $unreadCount ការជូនដំណឹងមិនទាន់អាន',
-                style: TextStyle(fontSize: 14, color: GColor.secondarytext),
-              ),
-              const SizedBox(height: 20),
-              if (_isLoading)
-                const Expanded(
-                  child: Center(child: CircularProgressIndicator()),
-                )
-              else if (_notifications.isEmpty)
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      'មិនទាន់មានការជូនដំណឹង',
-                      style: TextStyle(color: Colors.grey.shade500),
-                    ),
-                  ),
-                )
-              else
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: _notifications.length,
-                    itemBuilder: (context, index) {
-                      final n = _notifications[index];
-                      return NotificationItemCard(
-                        notification: n,
-                        onTap: () => _markOneRead(n),
-                      );
-                    },
-                  ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              _isLoading
+                  ? 'កំពុងផ្ទុក...'
+                  : 'អ្នកមាន $unreadCount ការជូនដំណឹងមិនទាន់អាន',
+              style: TextStyle(fontSize: 13, color: GColor.secondarytext),
+            ),
+          ],
+        ),
+        actions: [
+          if (unreadCount > 0)
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Center(
+                child: Hoverabletext(
+                  text: 'សម្គាល់អានទាំងអស់',
+                  onTap: _markAllRead,
                 ),
-            ],
+              ),
+            ),
+        ],
+      ),
+      body: SafeArea(
+        top: false,
+        child: RefreshIndicator(
+          onRefresh: _loadNotifications,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 25),
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _notifications.isEmpty
+                    ? Center(
+                        child: Text(
+                          'មិនទាន់មានការជូនដំណឹង',
+                          style: TextStyle(color: Colors.grey.shade500),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: _notifications.length,
+                        itemBuilder: (context, index) {
+                          final n = _notifications[index];
+                          return NotificationItemCard(
+                            notification: n,
+                            onTap: () => _markOneRead(n),
+                          );
+                        },
+                      ),
           ),
         ),
       ),

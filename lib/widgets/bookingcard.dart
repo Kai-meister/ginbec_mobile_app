@@ -5,13 +5,13 @@ import 'package:ginbec_mobile_app/utils/formatters.dart';
 class Bookingcard extends StatelessWidget {
   final Booking booking;
   final VoidCallback onViewDetails;
-  final VoidCallback onCancel;
+  final VoidCallback? onCancel;
 
   const Bookingcard({
     super.key,
     required this.booking,
     required this.onViewDetails,
-    required this.onCancel,
+    this.onCancel,
   });
 
   @override
@@ -52,17 +52,19 @@ class Bookingcard extends StatelessWidget {
                   child: const Text('មើលលម្អិត'),
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: onCancel,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFFDC2626),
-                    side: const BorderSide(color: Color(0xFFDC2626)),
+              if (onCancel != null) ...[
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: onCancel,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFFDC2626),
+                      side: const BorderSide(color: Color(0xFFDC2626)),
+                    ),
+                    child: const Text('បោះបង់'),
                   ),
-                  child: const Text('បោះបង់'),
                 ),
-              ),
+              ],
             ],
           ),
         ],

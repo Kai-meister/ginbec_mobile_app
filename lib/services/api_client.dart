@@ -1,4 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:ginbec_mobile_app/screens/login_screen/login.dart';
+import 'app_navigator.dart';
 import 'storage_service.dart';
 
 class ApiClient {
@@ -10,8 +13,8 @@ class ApiClient {
   late final Dio dio = Dio(
     BaseOptions(
       baseUrl: _baseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 15),
+      connectTimeout: const Duration(seconds: 60),
+      receiveTimeout: const Duration(seconds: 60),
       headers: {'Content-Type': 'application/json'},
     ),
   )..interceptors.addAll([
@@ -22,6 +25,7 @@ class ApiClient {
 
 class _AuthInterceptor extends Interceptor {
   bool _isRefreshing = false;
+  static bool _isRedirecting = false;
 
   @override
   Future<void> onRequest(
@@ -51,6 +55,7 @@ class _AuthInterceptor extends Interceptor {
         final refreshToken = await StorageService.instance.getRefreshToken();
         if (refreshToken == null) {
           _isRefreshing = false;
+          await _logoutAndRedirect();
           return handler.next(err);
         }
 
@@ -74,10 +79,23 @@ class _AuthInterceptor extends Interceptor {
         return handler.resolve(retried);
       } catch (_) {
         _isRefreshing = false;
-        await StorageService.instance.clearAll();
+        await _logoutAndRedirect();
         return handler.next(err);
       }
     }
     handler.next(err);
+  }
+
+  Future<void> _logoutAndRedirect() async {
+    await StorageService.instance.clearAll();
+    if (_isRedirecting) return;
+    final nav = appNavigatorKey.currentState;
+    if (nav == null) return;
+    _isRedirecting = true;
+    await nav.pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      (_) => false,
+    );
+    _isRedirecting = false;
   }
 }

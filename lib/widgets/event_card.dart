@@ -6,18 +6,20 @@ class EventCard extends StatelessWidget {
   final String tittle;
   final DateTime datetime;
   final int attendee;
+  final VoidCallback? onTap;
 
   const EventCard({
     super.key,
     required this.tittle,
     required this.attendee,
     required this.datetime,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){debugPrint('tap meeting now');},
+      onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
             color: Colors.white,

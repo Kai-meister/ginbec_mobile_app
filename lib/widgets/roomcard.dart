@@ -6,9 +6,9 @@ import 'package:ginbec_mobile_app/utils/formatters.dart';
 
 class RoomCard extends StatelessWidget {
   final Room room;
-  final VoidCallback onBook;
+  final VoidCallback? onBook;
 
-  const RoomCard({super.key, required this.room, required this.onBook});
+  const RoomCard({super.key, required this.room, this.onBook});
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +51,10 @@ class RoomCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-
-          // Gradient book button
-          _BookButton(onPressed: onBook),
+          if (onBook != null) ...[
+            const SizedBox(height: 16),
+            _BookButton(onPressed: onBook!),
+          ],
         ],
       ),
     );

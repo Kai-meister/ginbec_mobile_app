@@ -42,28 +42,29 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: GColor.backgroundcolor,
-      body: Column(
-        children: [
-          // Gradient header
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(25, 60, 25, 22),
-            decoration: BoxDecoration(
-              ),
-            child: const Text(
-              'ការកំណត់',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+      appBar: AppBar(
+        backgroundColor: GColor.white,
+        elevation: 0,
+        shape: Border(
+          bottom: BorderSide(color: Colors.grey.shade300, width: 1),
+        ),
+        toolbarHeight: 80,
+        automaticallyImplyLeading: false,
+        title: const Text(
+          'ការកំណត់',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+        ),
+      ),
+      body: SafeArea(
+        top: false,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
                   // Account
                   _SectionLabel(label: 'គណនី'),
                   const SizedBox(height: 8),
@@ -81,14 +82,6 @@ class _SettingScreenState extends State<SettingScreen> {
                               builder: (_) => const ProfileScreen(),
                             ),
                           ),
-                        ),
-                        _RowDivider(),
-                        _SettingRow(
-                          icon: Icons.shield_outlined,
-                          iconColor: const Color(0xFF7B2D8B),
-                          title: 'ឯកជនភាព និងសុវត្ថិភាព',
-                          subtitle: 'គ្រប់គ្រងការកំណត់ឯកជនភាព',
-                          onTap: () {},
                         ),
                       ],
                     ),
@@ -200,12 +193,10 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                ],
-              ),
-            ),
+              const SizedBox(height: 16),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
