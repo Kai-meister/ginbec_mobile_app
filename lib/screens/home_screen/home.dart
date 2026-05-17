@@ -1,5 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ginbec_mobile_app/config/color.dart';
+import 'package:ginbec_mobile_app/screens/meeting_screen/meeting_details.dart';
 import 'package:ginbec_mobile_app/screens/profile_screen/profile.dart';
 import 'package:ginbec_mobile_app/services/api_client.dart';
 import 'package:ginbec_mobile_app/services/storage_service.dart';
@@ -29,22 +31,29 @@ class _HomeState extends State<Home> {
   List<Map<String, dynamic>> _upcomingMeetings = [];
   List<NotificationModel> _notifications = [];
   bool _isLoading = true;
+  bool _canManage = false;
   Future<void> _openBookMeeting() async {
     try {
-      final results = await Future.wait([
-        ApiClient.instance.dio.get(
-          '/meeting-rooms',
-          queryParameters: {'status': 'AVAILABLE'},
-        ),
-        ApiClient.instance.dio.get('/users', queryParameters: {
-          'page': 0,
-          'size': 100,
-        }),
-      ]);
+      final roomsResp = await ApiClient.instance.dio.get(
+        '/meeting-rooms',
+        queryParameters: {'status': 'AVAILABLE'},
+      );
+      final roomList = (roomsResp.data['data'] as List?) ?? [];
 
-      final roomList = (results[0].data['data'] as List?) ?? [];
-      final userPage = results[1].data['data'] as Map<String, dynamic>;
-      final userList = (userPage['content'] as List?) ?? [];
+      // /users requires USER_CREATE — managers and below get 403.
+      // Tolerate failure and just show no attendees to pick.
+      List<dynamic> userList = const [];
+      try {
+        final usersResp = await ApiClient.instance.dio.get(
+          '/users',
+          queryParameters: {'page': 0, 'size': 100},
+        );
+        final userPage =
+            usersResp.data['data'] as Map<String, dynamic>?;
+        userList = (userPage?['content'] as List?) ?? const [];
+      } catch (_) {
+        // ignore — booking still works without attendees in payload
+      }
 
       // Keep roomCode→roomId map for submission
       final roomIdMap = <String, int>{};
@@ -100,6 +109,46 @@ class _HomeState extends State<Home> {
               const SnackBar(content: Text('កក់កិច្ចប្រជុំជោគជ័យ!')),
             );
             _loadData();
+          } on DioException catch (e) {
+            if (!mounted) return;
+            final req = e.requestOptions;
+            final code = e.response?.statusCode;
+            final body = e.response?.data;
+            final authHeader =
+                (req.headers['Authorization'] as String?) ?? '(missing)';
+            final tokenPreview = authHeader.length > 25
+                ? '${authHeader.substring(0, 25)}...'
+                : authHeader;
+            final detail = StringBuffer()
+              ..writeln('URL: ${req.method} ${req.uri}')
+              ..writeln('Status: ${code ?? '-'}')
+              ..writeln('Auth: $tokenPreview')
+              ..writeln('Request payload:')
+              ..writeln(req.data?.toString() ?? '(empty)')
+              ..writeln('---')
+              ..writeln('Response body:')
+              ..writeln(body?.toString() ?? '(empty)')
+              ..writeln('Dio: ${e.type.name} ${e.message ?? ''}');
+            showDialog<void>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('កក់បានបរាជ័យ'),
+                content: SizedBox(
+                  width: double.maxFinite,
+                  child: SingleChildScrollView(
+                    child: SelectableText(detail.toString(),
+                        style: const TextStyle(
+                            fontFamily: 'monospace', fontSize: 12)),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: const Text('បិទ'),
+                  ),
+                ],
+              ),
+            );
           } catch (e) {
             if (!mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
@@ -153,9 +202,12 @@ class _HomeState extends State<Home> {
       final meetingsList = (meetingsPage['content'] as List?) ?? [];
       final notifList = (notifPage['content'] as List?) ?? [];
 
+      final canManage = await StorageService.instance.canManageMeetings();
+
       if (!mounted) return;
       setState(() {
         _userName = userName ?? 'អ្នកប្រើប្រាស់';
+        _canManage = canManage;
         _todayMeetings = (dashboard['todayMeetings'] as num?)?.toInt() ?? 0;
         _unreadCount = (dashboard['unreadNotifications'] as num?)?.toInt() ?? 0;
         _upcomingCount = (meetingsPage['totalElements'] as num?)?.toInt() ?? 0;
@@ -239,7 +291,7 @@ class _HomeState extends State<Home> {
         ),
         actions: [
           IconButton(
-            onPressed: () => widget.onNavigateToTab?.call(3),
+            onPressed: () => widget.onNavigateToTab?.call(4),
             icon: const Icon(Icons.settings),
           ),
         ],
@@ -268,10 +320,11 @@ class _HomeState extends State<Home> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ActionButton(icon: Icons.calendar_month, onTap: () => widget.onNavigateToTab?.call(1), label: 'កក់បន្ទប់', bttBg: Colors.blueAccent, width: fieldWidth / 4.5),
-                    ActionButton(icon: Icons.description, onTap: () => widget.onNavigateToTab?.call(1), label: 'ឯកសារ', bttBg: Colors.green, width: fieldWidth / 4.5),
+                    if (_canManage)
+                      ActionButton(icon: Icons.calendar_month, onTap: () => widget.onNavigateToTab?.call(1), label: 'កក់បន្ទប់', bttBg: Colors.blueAccent, width: fieldWidth / 4.5),
+                    ActionButton(icon: Icons.description, onTap: () => widget.onNavigateToTab?.call(2), label: 'ឯកសារ', bttBg: Colors.green, width: fieldWidth / 4.5),
                     ActionButton(icon: Icons.group, onTap: () => widget.onNavigateToTab?.call(1), label: 'កាលវិភាគ', bttBg: Colors.purple, width: fieldWidth / 4.5),
-                    ActionButton(icon: Icons.settings, onTap: () => widget.onNavigateToTab?.call(3), label: 'ការកំណត់', bttBg: GColor.primarycolor, width: fieldWidth / 4.5),
+                    ActionButton(icon: Icons.settings, onTap: () => widget.onNavigateToTab?.call(4), label: 'ការកំណត់', bttBg: GColor.primarycolor, width: fieldWidth / 4.5),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -283,26 +336,40 @@ class _HomeState extends State<Home> {
                     child: Text('គ្មានកិច្ចប្រជុំខាងមុខ', style: TextStyle(color: Colors.grey.shade500)),
                   )
                 else
-                  ..._upcomingMeetings.take(2).map((m) => Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: EventCard(
-                          tittle: m['title'] as String? ?? '',
-                          attendee: 0,
-                          datetime: _meetingDateTime(m),
-                        ),
-                      )),
+                  ..._upcomingMeetings.take(2).map((m) {
+                    final id = (m['meetingId'] as num?)?.toInt();
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: EventCard(
+                        tittle: m['title'] as String? ?? '',
+                        attendee: 0,
+                        datetime: _meetingDateTime(m),
+                        onTap: id == null
+                            ? null
+                            : () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        MeetingDetailsScreen(meetingId: id),
+                                  ),
+                                ),
+                      ),
+                    );
+                  }),
                 const SizedBox(height: 20),
-                TranspButton(
-                  txt: 'កក់កិច្ចប្រជុំថ្មី',
-                  onPressed: _openBookMeeting,
-                  width: fieldWidth,
-                ),
-                const SizedBox(height: 20),
+                if (_canManage) ...[
+                  TranspButton(
+                    txt: 'កក់កិច្ចប្រជុំថ្មី',
+                    onPressed: _openBookMeeting,
+                    width: fieldWidth,
+                  ),
+                  const SizedBox(height: 20),
+                ],
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('ការជូនដំណឹងថ្មីៗ', style: TextStyle(fontSize: 20)),
-                    Hoverabletext(text: 'មើលទាំងអស់', onTap: () => widget.onNavigateToTab?.call(2)),
+                    Hoverabletext(text: 'មើលទាំងអស់', onTap: () => widget.onNavigateToTab?.call(3)),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -318,7 +385,7 @@ class _HomeState extends State<Home> {
                           )
                         ]
                       : _notifications,
-                  onTap: (_) => widget.onNavigateToTab?.call(2),
+                  onTap: (_) => widget.onNavigateToTab?.call(3),
                 ),
                 const SizedBox(height: 20),
                 Container(

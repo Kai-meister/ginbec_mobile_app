@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ginbec_mobile_app/config/color.dart';
 import 'package:ginbec_mobile_app/screens/alert_screen/alert.dart';
+import 'package:ginbec_mobile_app/screens/document_screen/document_screen.dart';
 import 'package:ginbec_mobile_app/screens/setting_screen/setting.dart';
 import 'package:ginbec_mobile_app/widgets/tabbutton.dart';
 
@@ -20,6 +21,7 @@ class _MainScreenState extends State<MainScreen> {
   late final List<Widget> _page = [
     Home(onNavigateToTab: _onTabSelected),
     MeetingScreen(),
+    DocumentScreen(),
     AlertScreen(),
     SettingScreen(),
   ];
@@ -54,15 +56,20 @@ class _MainScreenState extends State<MainScreen> {
                   isSelected: _selectedIndex == 1,
                   onTap: () => _onTabSelected(1)),
               TabButton(
-                  tittle: 'ការជូនដំណឹង',
-                  icon: Icons.notifications,
+                  tittle: 'ឯកសារ',
+                  icon: Icons.description,
                   isSelected: _selectedIndex == 2,
                   onTap: () => _onTabSelected(2)),
               TabButton(
-                  tittle: 'ការកំណត់',
-                  icon: Icons.settings,
+                  tittle: 'ការជូនដំណឹង',
+                  icon: Icons.notifications,
                   isSelected: _selectedIndex == 3,
                   onTap: () => _onTabSelected(3)),
+              TabButton(
+                  tittle: 'ការកំណត់',
+                  icon: Icons.settings,
+                  isSelected: _selectedIndex == 4,
+                  onTap: () => _onTabSelected(4)),
             ],
           )),
         ),
