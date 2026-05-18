@@ -3,6 +3,8 @@ import 'package:ginbec_mobile_app/config/color.dart';
 import 'package:ginbec_mobile_app/models/document.dart';
 import 'package:ginbec_mobile_app/services/document_service.dart';
 import 'package:ginbec_mobile_app/widgets/document_card.dart';
+import 'package:ginbec_mobile_app/widgets/gradient_hero.dart';
+import 'package:ginbec_mobile_app/widgets/segmented_tabs.dart';
 import 'package:ginbec_mobile_app/screens/document_screen/document_detail.dart';
 
 enum _SubTab { pending, recent, expiring }
@@ -17,7 +19,6 @@ class DocumentScreen extends StatefulWidget {
 class _DocumentScreenState extends State<DocumentScreen> {
   _SubTab _active = _SubTab.pending;
 
-  // Independent per-tab state
   final _state = {
     _SubTab.pending:  _TabState(),
     _SubTab.recent:   _TabState(),
@@ -99,6 +100,12 @@ class _DocumentScreenState extends State<DocumentScreen> {
     }
   }
 
+  String? _countLabel(_SubTab tab) {
+    final s = _state[tab]!;
+    if (s.items.isEmpty) return null;
+    return '${s.items.length}${s.hasMore ? '+' : ''}';
+  }
+
   void _openDetail(Document doc) async {
     final changed = await Navigator.of(context).push<bool>(
       MaterialPageRoute(builder: (_) => DocumentDetail(document: doc)),
@@ -106,28 +113,82 @@ class _DocumentScreenState extends State<DocumentScreen> {
     if (changed == true) await _refresh(_active);
   }
 
+  static const _tabLabels = ['កំពុងរង់ចាំ', 'ថ្មីៗ', 'ផុតកំណត់'];
+  static const _tabs = [_SubTab.pending, _SubTab.recent, _SubTab.expiring];
+
   @override
   Widget build(BuildContext context) {
     final s = _state[_active]!;
     return Scaffold(
       backgroundColor: GColor.backgroundcolor,
-      appBar: AppBar(
-        title: const Text('ឯកសារ',
-          style: TextStyle(fontFamily: 'KhmerOSMoulLightRegular')),
-        backgroundColor: GColor.backgroundcolor,
-        elevation: 0,
-        foregroundColor: Colors.black,
-      ),
       body: Column(
         children: [
-          _SubTabBar(active: _active, onSelect: (t) {
-            setState(() => _active = t);
-            _loadInitial(t);
-          }),
+          GradientHero(
+            bottomPadding: 30,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'ឯកសារ',
+                  style: TextStyle(
+                    fontFamily: 'KhmerOSMoulLightRegular',
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'គ្រប់គ្រងឯកសារនិងការអនុម័ត',
+                  style: TextStyle(
+                    fontFamily: 'KhmerOSSiemreap',
+                    fontSize: 12,
+                    color: Colors.white.withValues(alpha: 0.85),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    _CountChip(
+                      count: _countLabel(_SubTab.pending),
+                      label: 'កំពុងរង់ចាំ',
+                    ),
+                    const SizedBox(width: 8),
+                    _CountChip(
+                      count: _countLabel(_SubTab.recent),
+                      label: 'ថ្មីៗ',
+                    ),
+                    const SizedBox(width: 8),
+                    _CountChip(
+                      count: _countLabel(_SubTab.expiring),
+                      label: 'នឹងផុត',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Transform.translate(
+            offset: const Offset(0, -18),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              child: SegmentedTabs(
+                labels: _tabLabels,
+                activeIndex: _tabs.indexOf(_active),
+                onChanged: (i) {
+                  setState(() => _active = _tabs[i]);
+                  _loadInitial(_tabs[i]);
+                },
+              ),
+            ),
+          ),
           Expanded(
-            child: RefreshIndicator(
-              onRefresh: () => _refresh(_active),
-              child: _buildList(s),
+            child: Transform.translate(
+              offset: const Offset(0, -10),
+              child: RefreshIndicator(
+                onRefresh: () => _refresh(_active),
+                child: _buildList(s),
+              ),
             ),
           ),
         ],
@@ -141,7 +202,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
     }
     if (s.error != null && s.items.isEmpty) {
       return ListView(children: [
-        const SizedBox(height: 100),
+        const SizedBox(height: 80),
         Center(child: Text(s.error!,
           style: const TextStyle(fontFamily: 'KhmerOSSiemreap'))),
         const SizedBox(height: 16),
@@ -153,10 +214,11 @@ class _DocumentScreenState extends State<DocumentScreen> {
     }
     if (s.items.isEmpty) {
       return ListView(children: [
-        const SizedBox(height: 120),
+        const SizedBox(height: 100),
         Center(child: Text(_emptyMessage(_active),
-          style: const TextStyle(
-            fontFamily: 'KhmerOSSiemreap', color: Colors.black54))),
+          style: TextStyle(
+            fontFamily: 'KhmerOSSiemreap',
+            color: GColor.textMuted))),
       ]);
     }
     return NotificationListener<ScrollNotification>(
@@ -167,6 +229,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
         return false;
       },
       child: ListView.builder(
+        padding: const EdgeInsets.only(top: 6, bottom: 16),
         itemCount: s.items.length + (s.hasMore ? 1 : 0),
         itemBuilder: (ctx, i) {
           if (i >= s.items.length) {
@@ -191,50 +254,47 @@ class _TabState {
   String? error;
 }
 
-class _SubTabBar extends StatelessWidget {
-  final _SubTab active;
-  final ValueChanged<_SubTab> onSelect;
-  const _SubTabBar({required this.active, required this.onSelect});
+class _CountChip extends StatelessWidget {
+  final String? count;
+  final String label;
 
-  Widget _chip(BuildContext ctx, _SubTab tab, String label) {
-    final isActive = tab == active;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => onSelect(tab),
-        child: Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: isActive ? GColor.primarycolor : Colors.transparent,
-                width: 2.5,
-              ),
-            ),
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontFamily: 'KhmerOSSiemreap',
-              fontSize: 13,
-              fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
-              color: isActive ? GColor.primarycolor : Colors.black54,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  const _CountChip({required this.count, required this.label});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Row(children: [
-        _chip(context, _SubTab.pending,  'កំពុងរង់ចាំ'),
-        _chip(context, _SubTab.recent,   'ថ្មីៗ'),
-        _chip(context, _SubTab.expiring, 'ផុតកំណត់'),
-      ]),
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.18),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.25),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              count ?? '—',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 10,
+                color: Colors.white.withValues(alpha: 0.9),
+                fontFamily: 'KhmerOSSiemreap',
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
