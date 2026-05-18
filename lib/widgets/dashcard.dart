@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:ginbec_mobile_app/config/color.dart';
 
 class DashCard extends StatelessWidget {
   final String number;
@@ -23,38 +23,41 @@ class DashCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: width,
-        height: 130,
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
         decoration: BoxDecoration(
-          color: cardbg ?? Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          color: cardbg ?? GColor.surfaceCard,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: GColor.borderSubtle),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.shade300,
-              blurRadius: 8,
-              offset: Offset(0, 2)
-            )
-          ]
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               number,
               style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: GColor.primarycolor,
+                height: 1.1,
               ),
             ),
-            SizedBox(height: 8),
-            Text(label,
-            style: TextStyle(
-              fontSize: 15,
-              color: Colors.grey,
-            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
               textAlign: TextAlign.center,
-            )
+              style: TextStyle(
+                fontSize: 11,
+                color: GColor.textMuted,
+                fontFamily: 'KhmerOSSiemreap',
+              ),
+            ),
           ],
         ),
       ),
