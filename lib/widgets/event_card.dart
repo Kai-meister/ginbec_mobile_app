@@ -3,9 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:ginbec_mobile_app/config/color.dart';
 
 /// Compact meeting card.
-/// Left: 48px time block (HH:mm in primary color, weekday abbrev below).
-/// Divider: 1px dashed [GColor.borderSubtle].
+/// Left: 56px time block (HH:mm in primary color, weekday abbrev below).
+/// Divider: 1px solid [GColor.borderSubtle].
 /// Right: title (bold) + subtitle ("បន្ទប់ X · N នាក់" — caller passes [room]).
+/// Attendee count is omitted from the subtitle when zero/unknown.
 class EventCard extends StatelessWidget {
   final String tittle;
   final DateTime datetime;
@@ -31,7 +32,7 @@ class EventCard extends StatelessWidget {
     final weekday = _weekdayKh[(datetime.weekday - 1).clamp(0, 6)];
     final subtitleParts = <String>[];
     if (room != null && room!.isNotEmpty) subtitleParts.add('បន្ទប់ $room');
-    subtitleParts.add('$attendee នាក់');
+    if (attendee > 0) subtitleParts.add('$attendee នាក់');
     final subtitle = subtitleParts.join(' · ');
 
     return GestureDetector(
