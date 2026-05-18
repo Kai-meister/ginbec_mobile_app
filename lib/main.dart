@@ -30,7 +30,6 @@ class AuthGate extends StatefulWidget {
 
 class _AuthGateState extends State<AuthGate> {
   late final Future<bool> _hasToken = _checkToken();
-
   Future<bool> _checkToken() async {
     final token = await StorageService.instance.getAccessToken();
     return token != null && token.isNotEmpty;

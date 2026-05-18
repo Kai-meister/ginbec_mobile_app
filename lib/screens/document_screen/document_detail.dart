@@ -243,6 +243,7 @@ class _DocumentDetailState extends State<DocumentDetail> {
 class _InfoRow extends StatelessWidget {
   final String label;
   final String value;
+
   const _InfoRow({required this.label, required this.value});
 
   @override
@@ -254,13 +255,14 @@ class _InfoRow extends StatelessWidget {
           SizedBox(
             width: 110,
             child: Text(label,
-              style: const TextStyle(
-                fontFamily: 'KhmerOSSiemreap', color: Colors.black54)),
+                style: const TextStyle(
+                    fontFamily: 'KhmerOSSiemreap', color: Colors.black54)),
           ),
           Expanded(
             child: Text(value,
-              style: const TextStyle(
-                fontFamily: 'KhmerOSSiemreap', fontWeight: FontWeight.w500)),
+                style: const TextStyle(
+                    fontFamily: 'KhmerOSSiemreap',
+                    fontWeight: FontWeight.w500)),
           ),
         ],
       ),
