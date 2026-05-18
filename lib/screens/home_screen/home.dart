@@ -493,7 +493,10 @@ class _HomeState extends State<Home> {
                             : _notifications,
                         onTap: (_) => widget.onNavigateToTab?.call(3),
                       ),
-                      const SizedBox(height: 24),
+                      // Extra bottom space accounts for the -28 Transform.translate
+                      // visual shift so the last card doesn't sit too close to the
+                      // bottom nav bar on small viewports.
+                      const SizedBox(height: 52),
                     ],
                   ),
                 ),
