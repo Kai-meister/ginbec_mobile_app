@@ -5,6 +5,7 @@ class DashCard extends StatelessWidget {
   final String number;
   final String label;
   final VoidCallback? onTap;
+  /// Optional override for the card background. Defaults to [GColor.surfaceCard].
   final Color? cardbg;
   final double width;
 
