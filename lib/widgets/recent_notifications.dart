@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ginbec_mobile_app/config/color.dart';
 
-// Your model (assuming you have this from the database layer)
 class NotificationModel {
   final String id;
   final String title;
@@ -19,7 +19,6 @@ class NotificationModel {
   });
 }
 
-/// The rounded white card that wraps a list of notifications.
 class NotificationCard extends StatelessWidget {
   final List<NotificationModel> notifications;
   final void Function(NotificationModel)? onTap;
@@ -34,18 +33,19 @@ class NotificationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        color: GColor.surfaceCard,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: GColor.borderSubtle),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         child: Column(
           children: [
             for (int i = 0; i < notifications.length; i++) ...[
@@ -57,9 +57,9 @@ class NotificationCard extends StatelessWidget {
                 Divider(
                   height: 1,
                   thickness: 1,
-                  color: Colors.grey.shade200,
-                  indent: 16,
-                  endIndent: 16,
+                  color: GColor.borderSubtle,
+                  indent: 14,
+                  endIndent: 14,
                 ),
             ],
           ],
@@ -69,7 +69,6 @@ class NotificationCard extends StatelessWidget {
   }
 }
 
-/// A single notification row.
 class NotificationTile extends StatelessWidget {
   final NotificationModel notification;
   final VoidCallback? onTap;
@@ -80,73 +79,80 @@ class NotificationTile extends StatelessWidget {
     this.onTap,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-        child: Row(
-          children: [
-            Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                color: _colorForType(notification.type),
-                shape: BoxShape.circle,
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    notification.title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    _formatTime(notification.createdAt),
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(Icons.chevron_right, color: Colors.grey.shade400),
-          ],
-        ),
-      ),
-    );
+  IconData _iconForType(String type) {
+    switch (type) {
+      case 'meeting':
+        return Icons.event;
+      case 'booking':
+        return Icons.calendar_month;
+      case 'document':
+        return Icons.description;
+      default:
+        return Icons.notifications;
+    }
   }
 
   String _formatTime(DateTime time) {
     final diff = DateTime.now().difference(time);
     if (diff.inMinutes < 1) return 'ទើបតែឥឡូវ';
     if (diff.inMinutes < 60) return '${diff.inMinutes} នាទីមុន';
-    if (diff.inHours < 24) {
-      return '${diff.inHours} ម៉ោងមុន';
-    }
+    if (diff.inHours < 24) return '${diff.inHours} ម៉ោងមុន';
     return '${diff.inDays} ថ្ងៃមុន';
   }
 
-  Color _colorForType(String type) {
-    switch (type) {
-      case 'meeting':
-        return const Color(0xFFFF9500);
-      case 'booking':
-        return Colors.green;
-      case 'document':
-        return Colors.blue;
-      default:
-        return Colors.grey;
-    }
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: GColor.surfaceTint,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                _iconForType(notification.type),
+                color: GColor.primarycolor,
+                size: 18,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    notification.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: GColor.textBody,
+                      fontFamily: 'KhmerOSSiemreap',
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    _formatTime(notification.createdAt),
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: GColor.textMuted,
+                      fontFamily: 'KhmerOSSiemreap',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.chevron_right, color: GColor.textMuted, size: 16),
+          ],
+        ),
+      ),
+    );
   }
 }
