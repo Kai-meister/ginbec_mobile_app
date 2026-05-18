@@ -18,6 +18,10 @@ class SegmentedTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    assert(
+      activeIndex >= 0 && activeIndex < labels.length,
+      'activeIndex $activeIndex is out of range for ${labels.length} labels',
+    );
     return Container(
       decoration: BoxDecoration(
         color: GColor.surfaceCard,
@@ -41,7 +45,7 @@ class SegmentedTabs extends StatelessWidget {
               behavior: HitTestBehavior.opaque,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 150),
-                padding: const EdgeInsets.symmetric(vertical: 9),
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   color: isActive ? GColor.primarycolor : Colors.transparent,
                   borderRadius: BorderRadius.circular(10),
@@ -49,6 +53,8 @@ class SegmentedTabs extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(
                   labels[i],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
