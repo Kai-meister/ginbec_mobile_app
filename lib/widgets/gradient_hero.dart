@@ -10,13 +10,13 @@ import 'package:ginbec_mobile_app/config/color.dart';
 class GradientHero extends StatelessWidget {
   final Widget child;
   final double bottomPadding;
-  final EdgeInsets contentPadding;
+  final double horizontalPadding;
 
   const GradientHero({
     super.key,
     required this.child,
     this.bottomPadding = 28,
-    this.contentPadding = const EdgeInsets.symmetric(horizontal: 16),
+    this.horizontalPadding = 16,
   });
 
   @override
@@ -26,8 +26,8 @@ class GradientHero extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.only(
         top: topInset + 12,
-        left: contentPadding.left,
-        right: contentPadding.right,
+        left: horizontalPadding,
+        right: horizontalPadding,
         bottom: bottomPadding,
       ),
       decoration: BoxDecoration(
