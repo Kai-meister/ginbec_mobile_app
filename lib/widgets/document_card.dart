@@ -8,6 +8,8 @@ class DocumentCard extends StatelessWidget {
   final VoidCallback onTap;
   const DocumentCard({super.key, required this.document, required this.onTap});
 
+  /// Builds the compact one-line metadata under the title.
+  /// Prefers officer + expiry — falls back to document type only when both are absent.
   String _metaLine() {
     final parts = <String>[];
     if (document.officerName != null && document.officerName!.isNotEmpty) {
